@@ -88,6 +88,8 @@ get "/api/v1/users", params: { per_page: 5, page: 1, sort: 'email', order: 'desc
 
 ```
 
+Generated docs stored in /public/open-api.yaml
+
 ## Contributing
 
 Gem in active development
