@@ -19,13 +19,7 @@ And then execute:
 ``` config/enviroments/test.rb
 
 Rails.application.configure
-
-...
-
   config.middleware.insert_before 0, OpenApiRack::Middleware
-
-...
-
 end
 
 ```
@@ -37,9 +31,7 @@ Please, keep it only for test env!
 ```config/initializers/open_api_rack.rb
 
 OpenApiRack.configure do |config|
-
-	config.headers_list = %w(access_token client uid access-token)
-
+  config.headers_list = %w(access_token client uid access-token)
 end
 
 ```
@@ -51,41 +43,22 @@ end
 ``` spec/requests/users_spec.rb
 
 RSpec.describe "Api::V1::Users", type: :request do
+  describe "GET /" do
+    before(:each) do
+      get "/api/v1/users", params: { per_page: 5, page: 1, sort: 'email', order: 'desc' }
+    end
 
-...
-
-	describe "GET /" do
-	
-		before(:each) do
-	
-			get "/api/v1/users", params: { per_page: 5, page: 1, sort: 'email', order: 'desc' }
-	
-		end
-
-  
-
-		it "returns http success" do
-	
-			expect(response).to have_http_status(:success)
-	
-		end
-
-	end
-
-...
-
+    it "returns http success" do
+      expect(response).to have_http_status(:success)
+    end
+  end
 end
 ```
 
 You may also exclude specific request from documentation by adding `{ "OA_SKIP_EXAMPLE" => "true" }` to your request headers  
 
 ``` spec/requests/users_spec.rb
-...
-
 get "/api/v1/users", params: { per_page: 5, page: 1, sort: 'email', order: 'desc' }, headers: { "OA_SKIP_EXAMPLE" => "true" }
-
-...
-
 ```
 
 Generated docs stored in /public/open-api.yaml
