@@ -9,7 +9,7 @@ module OpenApiRack
     def call(env)
       app_call_result = @app.call(env)
 
-      return app_call_result if env["OA_SKIP_EXAMPLE"] == "true"
+      return app_call_result if skip?
 
       if File.exist?("public/open-api.yaml")
         open_api_hash = YAML.load_file("public/open-api.yaml")
@@ -140,6 +140,16 @@ module OpenApiRack
         }
       end
       result
+    end
+
+    def skip?
+      disable_by_default = OpenApiRack.configuration.disable_by_default
+      skip_example? = env["OA_SKIP_EXAMPLE"] == "true"
+      include_example? = env["OA_INCLUDE_EXAMPLE"] = "true"
+
+      return false if include_example?
+      return true if disable_by_default
+      return true if skip_example?
     end
   end
 end

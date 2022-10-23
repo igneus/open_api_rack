@@ -31,7 +31,11 @@ Please, keep it only for test env!
 ```config/initializers/open_api_rack.rb
 
 OpenApiRack.configure do |config|
+  # list of headers you want to follow
   config.headers_list = %w(access_token client uid access-token)
+
+  # by default gem is enabled
+  config.disable_by_default = true
 end
 
 ```
@@ -59,6 +63,11 @@ You may also exclude specific request from documentation by adding `{ "OA_SKIP_E
 
 ``` spec/requests/users_spec.rb
 get "/api/v1/users", params: { per_page: 5, page: 1, sort: 'email', order: 'desc' }, headers: { "OA_SKIP_EXAMPLE" => "true" }
+```
+
+If you decide to disable doc generation, you can turn it on for specific request
+``` spec/requests/users_spec.rb
+get "/api/v1/users", params: { per_page: 5, page: 1, sort: 'email', order: 'desc' }, headers: { "OA_INCLUDE_EXAMPLE" => "true" }
 ```
 
 Generated docs stored in /public/open-api.yaml
