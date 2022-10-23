@@ -1,8 +1,15 @@
-# frozen_string_literal: true
-
-require_relative "open_api_rack/version"
+require 'open_api_rack/configuration'
 
 module OpenApiRack
-  class Error < StandardError; end
-  # Your code goes here...
+  class << self
+    attr_accessor :configuration
+  end
+
+  def self.configuration
+    @@configuration ||= Configuration.new
+  end
+
+  def self.configure
+    yield(configuration)
+  end
 end

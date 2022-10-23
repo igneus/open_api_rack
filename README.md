@@ -1,9 +1,3 @@
-# OpenApiRack
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/open_api_rack`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
-
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -16,23 +10,70 @@ And then execute:
 
     $ bundle install
 
-Or install it yourself as:
-
-    $ gem install open_api_rack
-
 ## Usage
 
-TODO: Write usage instructions here
+1) Its pretty simple. First regester middleware for a test enviroment
 
-## Development
+``` config/enviroments/test.rb
+Rails.application.configure
+	...
+	config.middleware.insert_before 0, OpenApiRack::Middleware
+	...
+end
+```
 
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+Please, keep it only for test env!
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+2) Then you need to configure the gem. Create a initializer file
+
+```config/initializers/open_api_rack.rb
+
+OpenApiRack.configure do |config|
+	config.headers_list = %w(access_token client uid access-token)
+end
+```
+
+`header_list` setting define headers you want to follow
+
+3) Final step, start writing you request specs
+
+``` spec/requests/users_spec.rb
+RSpec.describe "Api::V1::Users", type: :request do
+	...
+	describe "GET /" do
+		before(:each) do
+	      get "/api/v1/users", params: { per_page: 5, page: 1, sort: 'email', order: 'desc' }
+	    end
+
+	    it "returns http success" do
+	      expect(response).to have_http_status(:success)
+	    end
+	end
+	...
+end
+
+```
+
+You may also exclude specific request from documentation by adding  `{ "OA_SKIP_EXAMPLE" => "true" }` to your request headers
+
+``` spec/requests/users_spec.rb
+...
+
+	get "/api/v1/users", params: { per_page: 5, page: 1, sort: 'email', order: 'desc' }, headers: { "OA_SKIP_EXAMPLE" => "true" }
+	
+...
+
+```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/open_api_rack. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/open_api_rack/blob/main/CODE_OF_CONDUCT.md).
+Gem in active development
+Known issues:
+- not working for DELETE http method
+- not working for :no_content response
+- can not define fields types
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/chhlga/open_api_rack. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/open_api_rack/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
