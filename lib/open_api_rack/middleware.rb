@@ -1,3 +1,5 @@
+require 'yaml'
+
 module OpenApiRack
   class Middleware
     def initialize(app)
@@ -72,7 +74,7 @@ module OpenApiRack
       )
 
       File.open('public/open-api.yaml', 'w') do |f|
-        f.write(open_api_hash.to_yaml)
+        f.write YAML.dump open_api_hash
       end
 
       app_call_result
