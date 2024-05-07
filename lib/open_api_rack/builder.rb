@@ -1,4 +1,5 @@
 require 'json'
+require 'deep_merge'
 
 module OpenApiRack
   class Builder
@@ -12,7 +13,7 @@ module OpenApiRack
     # accepts a Rack environment and corresponding Rack response,
     # updates #open_api_hash accordingly
     def add(env, response)
-      open_api_hash["paths"].merge!(
+      open_api_hash["paths"].deep_merge!(
         env["PATH_INFO"] => {
           env["REQUEST_METHOD"].downcase => {
             "parameters" => Rack::Request.new(env).params.map do |k, v|
