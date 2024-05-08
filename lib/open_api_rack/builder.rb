@@ -16,7 +16,7 @@ module OpenApiRack
       open_api_hash["paths"].deep_merge!(
         env["PATH_INFO"] => {
           env["REQUEST_METHOD"].downcase => {
-            "parameters" => Rack::Request.new(env).params.map do |k, v|
+            "parameters" => Rack::Request.new(env).GET.map do |k, v|
               {
                 "name" => k,
                 "in" => "query",
