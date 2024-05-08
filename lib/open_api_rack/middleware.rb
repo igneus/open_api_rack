@@ -32,7 +32,7 @@ module OpenApiRack
       builder = Builder.new open_api_hash, @headers_list
       builder.add env, app_call_result
 
-      File.open(path, 'w') do |f|
+      File.open("public/open-api.yaml", 'w') do |f|
         f.write YAML.dump builder.open_api_hash
       end
 
