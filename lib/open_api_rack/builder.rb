@@ -61,7 +61,7 @@ module OpenApiRack
     private
 
     def request_body(env)
-      Rack::Request.new(env).params
+      JSON.parse Rack::Request.new(env).body.read
     end
 
     def parsed_request_body(env)
