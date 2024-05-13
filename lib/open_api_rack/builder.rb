@@ -58,6 +58,11 @@ module OpenApiRack
           }.merge(parsed_request_body(env))
         }
       )
+    rescue JSON::ParserError => e
+      # just log error and go on
+      STDERR.puts "Failed to parse JSON: #{e}"
+      STDERR.puts "Environment:\n" + env.inspect
+      STDERR.puts "Response:\n" + response.inspect
     end
 
     private
