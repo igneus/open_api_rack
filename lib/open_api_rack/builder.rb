@@ -58,11 +58,6 @@ module OpenApiRack
           }.merge(parsed_request_body(env))
         }
       )
-    rescue JSON::ParserError => e
-      # just log error and go on
-      STDERR.puts "Failed to parse JSON: #{e}"
-      STDERR.puts "Environment:\n" + env.inspect
-      STDERR.puts "Response:\n" + response.inspect
     end
 
     private
@@ -74,14 +69,26 @@ module OpenApiRack
     def parsed_request_body(env)
       return {} unless env["REQUEST_METHOD"] == "POST" ||
         env["REQUEST_METHOD"] == "PUT" ||
-          env["REQUEST_METHOD"] == "PATCH"
+        env["REQUEST_METHOD"] == "PATCH"
+
+      properties =
+        begin
+          parse_json(request_body(env))
+        rescue JSON::ParserError => e
+          STDERR.puts "Failed to parse request body: #{e}"
+          STDERR.puts "Environment:\n" + env.inspect
+
+          # produce note also in the resulting OpenAPI document
+          {'#COMMENT' => 'FAILED TO PARSE REQUEST BODY'}
+        end
+
       {
         "requestBody" => {
           "content" => {
             "application/json" => {
               "schema" => {
                 "type" => "object",
-                "properties" => parse_json(request_body(env))
+                "properties" => properties
               }
             }
           }
