@@ -97,7 +97,7 @@ module OpenApiRack
     end
 
     def response_body(app_call_result)
-      JSON.parse(app_call_result[2].first)
+      JSON.parse(app_call_result[2].each.first)
     end
 
     def parse_json(json, result = {})
