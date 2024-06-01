@@ -13,7 +13,7 @@ module OpenApiRack
     # accepts a Rack environment and corresponding Rack response,
     # updates #open_api_hash accordingly
     def add(env, response)
-      return unless response[1]['Content-Type'].include?('json')
+      return unless response[1]['Content-Type']&.include?('json')
 
       open_api_hash["paths"].deep_merge!(
         env["PATH_INFO"] => {
