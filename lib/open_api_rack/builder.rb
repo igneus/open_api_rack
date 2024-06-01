@@ -100,7 +100,7 @@ module OpenApiRack
       JSON.parse(app_call_result[2].each.first)
     rescue JSON::ParserError => e
       STDERR.puts "Failed to parse response body: #{e}"
-      STDERR.puts "Response:\n" + app_call_result
+      STDERR.puts "Response:\n" + app_call_result.inspect
 
       # produce note also in the resulting OpenAPI document
       {'#COMMENT' => 'FAILED TO PARSE RESPONSE BODY'}
